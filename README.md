@@ -2,7 +2,7 @@
 
 ## Overview
 Investigates patterns in UK house prices and indices, across counties and regions within the Uk from 2006-2025.
-Growth dynamics, regional divergence and moment effects are explored. It explores the use of past trends to forecast furture price movements.
+Growth dynamics, regional divergence and momentum effects are explored. It explores the use of past trends to forecast future price movements.
 
 
 ## Dataset
