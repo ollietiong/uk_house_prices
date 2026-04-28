@@ -22,8 +22,9 @@ def clean_data(df:pd.DataFrame,regions:pd.DataFrame)-> pd.DataFrame:
 
     # merge to regions
     # rename column in regions to merge on
-    regions = regions.rename(columns={"County": "RegionName"})
+    #regions = regions.rename(columns={"County": "RegionName"})
     df = df.merge(regions, on='RegionName',how='left')
+
 
     return df
 

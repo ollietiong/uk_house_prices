@@ -13,7 +13,12 @@ def build_dataset(df):
     df = df[(df['Date']>= start_date) & (df['Date'] < end_date)]
 
     # check no missing values
-    assert df.isna().sum() == 0
+    missing = df.isna().sum()
+    missing = missing[missing>0]
+
+    if not missing.empty:
+        raise ValueError(f"Missing values in dataset:\n {missing}")
+    
 
     # split dataset into train and test
     split_idx = int(len(df)*0.8)
@@ -27,5 +32,7 @@ def build_dataset(df):
 
     X_test = test.drop(columns=['12m%Change'])
     y_test = test['12m%Change']
+
+    print("Dataset built")
 
     return X_train,y_train,X_test,y_test
