@@ -8,6 +8,7 @@ from src.data.build_dataset import build_dataset
 from src.features.feature_engineering import FeatureEngineer
 from src.pipelines.pipeline import build_pipeline
 from sklearn.metrics import mean_absolute_error
+from sklearn.metrics import root_mean_squared_error
 
 
 def main():
@@ -56,20 +57,34 @@ def main():
         df = features.transform_time_features(df)
 
         # build dataset
-        X_train, y_train, X_test,y_test = build_dataset(df)
+        datasets = build_dataset(df)
 
-        # Build pipeline
-        pipe = build_pipeline(X_train)
+        for i,j in enumerate(datasets):
+            # X_train i[0], y_train i[1], X_test i[2], y_test i[3]
+            X_train,y_train,X_test,y_test = j[0],j[1],j[2],j[3]
 
-        # Train model
-        pipe.fit(X_train,y_train)
-        print("Model fit to training data")
+            # Build pipeline
+            pipe = build_pipeline(X_train)
 
-        # Evaluate
-        preds = pipe.predict(X_test)
-        mae = mean_absolute_error(y_test, preds)
+            # Train model
+            pipe.fit(X_train,y_train)
+            print("Model fit to training data")
 
-        print(f"Mean absolute error: {mae}")
+            # Evaluate
+            preds = pipe.predict(X_test)
+            mae = mean_absolute_error(y_test, preds)
+            rmse = root_mean_squared_error(y_test, preds)
+            
+            direction = sum(y_test.multiply(preds) >= 0)/len(y_test)
+
+
+            print(f"Data subset: {i}")
+            print(f"Direction: {direction}")
+            print(f"Mean absolute error: {mae}")
+            print(f"Root mean squared error: {mae}")
+
+            
+            
 
         
     except FileNotFoundError as e:

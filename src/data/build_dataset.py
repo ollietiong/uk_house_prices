@@ -1,9 +1,10 @@
 import pandas as pd
+from sklearn.model_selection import TimeSeriesSplit
 
 def build_dataset(df):
 
-    ''' builds a dataset into X train, y train, X test, y test 
-    given a pandas dataframe. also restricts the dates to reduce 
+    ''' builds a dataset into X train, y train, X test, y test time series splits 
+    using an expanding window for a pandas dataframe. also restricts the dates to reduce 
     missing values'''
 
     # restrict dates
@@ -19,7 +20,24 @@ def build_dataset(df):
     if not missing.empty:
         raise ValueError(f"Missing values in dataset:\n {missing}")
     
+    # apply time series split (expanding window)
+    tscv = TimeSeriesSplit()
+    datasets = []
+    for train_index,test_index in tscv.split(df):
+        # append train, test datasets
+        train, test = df.iloc[train_index], df.iloc[test_index]
 
+        # split into X and y
+        X_train = train.drop(columns=['12m%Change'])
+        y_train = train['12m%Change']
+
+        X_test = test.drop(columns=['12m%Change'])
+        y_test = test['12m%Change']
+
+        datasets.append((X_train,y_train,X_test,y_test))
+
+
+    '''
     # split dataset into train and test
     split_idx = int(len(df)*0.8)
     train = df.iloc[:split_idx]
@@ -34,5 +52,6 @@ def build_dataset(df):
     y_test = test['12m%Change']
 
     print("Dataset built")
+    '''
 
-    return X_train,y_train,X_test,y_test
+    return datasets
